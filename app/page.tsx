@@ -4,7 +4,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
 
-export default function Home() {
+export default async function Home() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  console.log("API URL:", apiUrl);
+
+  const res = await fetch(`${apiUrl}/`, {
+    cache: "no-store",
+  });
+
+  const data = await res.json();
+
+  console.log(data)
   return (
     <div className="grid grid-cols-[1.5fr_1fr] gap-8 p-2 pt-10 w-full max-w-5xl">
       <div className="flex flex-col gap-10">
@@ -44,33 +54,33 @@ export default function Home() {
           <TabsContent value="explorer">
             <div className="grid grid-cols-1 gap-8 p-2">
               <RecipeCard
-                imageSrc="https://recipesappea0631f8364f439bb0004d59ea016d09234552-production.s3.eu-west-3.amazonaws.com/public/images/recipes/1731324644265-couscous.jpeg?x-amz-content-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAXYKJSITNZTVR2IVR%2F20250125%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20250125T215453Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEC4aCWV1LXdlc3QtMyJHMEUCIAW9ISCdsyjczzqkaXiv2WPI%2FNCOwq0%2FHtTFcjTMucQaAiEAp0EWsQV5LRk3fB7tZ1eXQ4gyYVLxVDPV4JoJlWFCcG8qyQUINxAAGgw1MzMyNjcxMDQ5ODciDCW6HiTvvIFntnIjsCqmBQ%2FyAyGBpRezJrBLT7SlqxRNhZpBdafM4O7twIL4dmRK15P28EoPhKr2B%2F2MyZrPZFDg%2BKe8uS6dFbcz7au88PR6HWlMQ8ynym6LJSBVC0mAgsE2S8pQ%2FonFBD7weEPDvyIB9%2BGoAnT1Ji9dD%2FdFJKfTdmg%2FKm6l5cFtVDcvpT5pYiTMFY%2FGRzj2KEWdXTyO0P8gfK3uZdAGXrMuaM0n4kc6YCVafSBbXXjDKhc762CyixvOcLsLvH47kGQhDtOdbCWaRAIkbxtEtxPuIAmFy9%2BbDRf5BY2aqy3Bdlr9lBFEDuTi4L4IkQrP3isAJMwbnPHXKAchkgySmhjlS%2B9YgAZZimK2w5gA1jCKINuxtIzHxffVRbzrxx5M0PzMysuKeMheETjlN76hGBqjn4Pa%2B4MlEyuxUoaX2Q08RXfbEaEb4ToYPGBZkQ9%2BlT%2BHGDLh1Nosdd8FJ7Ye%2BG1AGrSIIW3h2IYBhTbtrASExYUIQ0sbbcgbg8%2F%2FJFcLXVIY6jZIMl953o2lm7F4eDaL%2Bov%2BMQ%2FtlEO3Y5%2Bx3yqSQAFXoBJ8o%2BOUj4EGp7jtD9RtrKvxYCx1JYfMxby%2FMAu9eF3P6yliyBcPV8XF5%2B4VX%2BKlkqoN1EMrZRu4DqNUWXeyFc5VKRZ3Q%2FgSvNRcS%2FAyV04yne1%2BNWvruEZ2gb6dRsLj1AYo7%2Bq8LWdYFD%2F6OUzYWlR%2BeRhjhi33Ye4Vf0wwUilCSyKxOqNWnJukocYswEo5RmsVQ0w%2Fgwoku8YlbryEN4FVpPOvWAR5QKv7QRVapC9NZGFVWyR50gCs7cvQLsBRIxxpRm6I30iPgnqpu%2B%2BqSvp29urfafukb%2FbfuACF1UAQ2rg2VXnutC%2FaayA5eO%2Fg3cpIJ7zZZLs%2B6sU9eNWGEWb6G0ZklUyp1jCtu9W8BjrdAhLkG4OnFqhBishsJ%2B62q2NvIPT7lPrsPfUMQe0uWci2SpdUU%2FkRvszAxMM1i5jVvkL4C%2BmbE4TSygx9Z1FmJc95TqH7x9Ep6mhJA%2BLNGLnkj4hvrv5LnJ9Kijkt5jNEdgg%2BEMTRbb9ZgkjVcNBOs%2FgKGqGLSpt3C3P45yxWRUDxzpZzeSKbfkh2FRSSYFmFNg58pqpJeafUlz7IlEeVm2ifdV4EXDyWoY2jLu55uZ8p6AbPf%2FnDKTqMDV5%2BIMRLK8PDj9JAgSS4EfRomRIyZJHC3lhHQiENgTcGESKOmtZe0%2B3CjhwQnLbExJkxvyyzcbRDf7UHF31bgWr8aNdpsxYt%2FNUoxepQUKQtLMk7U4FtMUWKRaaIympUQN1o9fMFTLh88sNVoCkjzdklbfzbb9T%2FP5RzWqMHpbqihmT27aOy0uvDpRoebbA%2FmbFaTHJrbdpp8Tf9TKMDuRBUhNY%3D&X-Amz-Signature=d5ae1f21edd32846ad0a98c89c51e8c82480a6876e1c3f7b13d9f22bdb91b66c"
-                imageAlt="Couscous"
-                prepTime="45min"
+                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg"
+                imageAlt="Dessert"
+                prepTime="20min"
                 avatarSrc="https://github.com/shadcn.png"
                 avatarAlt="CN"
-                title="Couscous: Une Recette Facile et Délicieuse"
-                username="Utilisateur1"
-                views="1,2M"
-                postedAgo="3 jours"
+                title="Délicieux Dessert"
+                username="Utilisateur4"
+                views="750K"
+                postedAgo="5 heures"
               />
               <RecipeCard
-                imageSrc="https://recipesappea0631f8364f439bb0004d59ea016d09234552-production.s3.eu-west-3.amazonaws.com/public/images/recipes/1731324644265-couscous.jpeg?x-amz-content-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAXYKJSITNZTVR2IVR%2F20250125%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20250125T215453Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEC4aCWV1LXdlc3QtMyJHMEUCIAW9ISCdsyjczzqkaXiv2WPI%2FNCOwq0%2FHtTFcjTMucQaAiEAp0EWsQV5LRk3fB7tZ1eXQ4gyYVLxVDPV4JoJlWFCcG8qyQUINxAAGgw1MzMyNjcxMDQ5ODciDCW6HiTvvIFntnIjsCqmBQ%2FyAyGBpRezJrBLT7SlqxRNhZpBdafM4O7twIL4dmRK15P28EoPhKr2B%2F2MyZrPZFDg%2BKe8uS6dFbcz7au88PR6HWlMQ8ynym6LJSBVC0mAgsE2S8pQ%2FonFBD7weEPDvyIB9%2BGoAnT1Ji9dD%2FdFJKfTdmg%2FKm6l5cFtVDcvpT5pYiTMFY%2FGRzj2KEWdXTyO0P8gfK3uZdAGXrMuaM0n4kc6YCVafSBbXXjDKhc762CyixvOcLsLvH47kGQhDtOdbCWaRAIkbxtEtxPuIAmFy9%2BbDRf5BY2aqy3Bdlr9lBFEDuTi4L4IkQrP3isAJMwbnPHXKAchkgySmhjlS%2B9YgAZZimK2w5gA1jCKINuxtIzHxffVRbzrxx5M0PzMysuKeMheETjlN76hGBqjn4Pa%2B4MlEyuxUoaX2Q08RXfbEaEb4ToYPGBZkQ9%2BlT%2BHGDLh1Nosdd8FJ7Ye%2BG1AGrSIIW3h2IYBhTbtrASExYUIQ0sbbcgbg8%2F%2FJFcLXVIY6jZIMl953o2lm7F4eDaL%2Bov%2BMQ%2FtlEO3Y5%2Bx3yqSQAFXoBJ8o%2BOUj4EGp7jtD9RtrKvxYCx1JYfMxby%2FMAu9eF3P6yliyBcPV8XF5%2B4VX%2BKlkqoN1EMrZRu4DqNUWXeyFc5VKRZ3Q%2FgSvNRcS%2FAyV04yne1%2BNWvruEZ2gb6dRsLj1AYo7%2Bq8LWdYFD%2F6OUzYWlR%2BeRhjhi33Ye4Vf0wwUilCSyKxOqNWnJukocYswEo5RmsVQ0w%2Fgwoku8YlbryEN4FVpPOvWAR5QKv7QRVapC9NZGFVWyR50gCs7cvQLsBRIxxpRm6I30iPgnqpu%2B%2BqSvp29urfafukb%2FbfuACF1UAQ2rg2VXnutC%2FaayA5eO%2Fg3cpIJ7zZZLs%2B6sU9eNWGEWb6G0ZklUyp1jCtu9W8BjrdAhLkG4OnFqhBishsJ%2B62q2NvIPT7lPrsPfUMQe0uWci2SpdUU%2FkRvszAxMM1i5jVvkL4C%2BmbE4TSygx9Z1FmJc95TqH7x9Ep6mhJA%2BLNGLnkj4hvrv5LnJ9Kijkt5jNEdgg%2BEMTRbb9ZgkjVcNBOs%2FgKGqGLSpt3C3P45yxWRUDxzpZzeSKbfkh2FRSSYFmFNg58pqpJeafUlz7IlEeVm2ifdV4EXDyWoY2jLu55uZ8p6AbPf%2FnDKTqMDV5%2BIMRLK8PDj9JAgSS4EfRomRIyZJHC3lhHQiENgTcGESKOmtZe0%2B3CjhwQnLbExJkxvyyzcbRDf7UHF31bgWr8aNdpsxYt%2FNUoxepQUKQtLMk7U4FtMUWKRaaIympUQN1o9fMFTLh88sNVoCkjzdklbfzbb9T%2FP5RzWqMHpbqihmT27aOy0uvDpRoebbA%2FmbFaTHJrbdpp8Tf9TKMDuRBUhNY%3D&X-Amz-Signature=d5ae1f21edd32846ad0a98c89c51e8c82480a6876e1c3f7b13d9f22bdb91b66c"
-                imageAlt="Crumble"
-                prepTime="30min"
+                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp"
+                imageAlt="Recette"
+                prepTime="15min"
                 avatarSrc="https://github.com/shadcn.png"
                 avatarAlt="CN"
-                title="Crumble aux Pommes"
-                username="Utilisateur2"
-                views="500K"
-                postedAgo="2 jours"
+                title="Recette Rapide"
+                username="Utilisateur3"
+                views="1M"
+                postedAgo="1 jour"
               />
             </div>
           </TabsContent>
           <TabsContent value="pour-vous">
             <div className="grid grid-cols-1 gap-8 p-2">
               <RecipeCard
-                imageSrc="https://recipesappea0631f8364f439bb0004d59ea016d09234552-production.s3.eu-west-3.amazonaws.com/public/images/recipes/1731324644265-couscous.jpeg?x-amz-content-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAXYKJSITNZTVR2IVR%2F20250125%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20250125T215453Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEC4aCWV1LXdlc3QtMyJHMEUCIAW9ISCdsyjczzqkaXiv2WPI%2FNCOwq0%2FHtTFcjTMucQaAiEAp0EWsQV5LRk3fB7tZ1eXQ4gyYVLxVDPV4JoJlWFCcG8qyQUINxAAGgw1MzMyNjcxMDQ5ODciDCW6HiTvvIFntnIjsCqmBQ%2FyAyGBpRezJrBLT7SlqxRNhZpBdafM4O7twIL4dmRK15P28EoPhKr2B%2F2MyZrPZFDg%2BKe8uS6dFbcz7au88PR6HWlMQ8ynym6LJSBVC0mAgsE2S8pQ%2FonFBD7weEPDvyIB9%2BGoAnT1Ji9dD%2FdFJKfTdmg%2FKm6l5cFtVDcvpT5pYiTMFY%2FGRzj2KEWdXTyO0P8gfK3uZdAGXrMuaM0n4kc6YCVafSBbXXjDKhc762CyixvOcLsLvH47kGQhDtOdbCWaRAIkbxtEtxPuIAmFy9%2BbDRf5BY2aqy3Bdlr9lBFEDuTi4L4IkQrP3isAJMwbnPHXKAchkgySmhjlS%2B9YgAZZimK2w5gA1jCKINuxtIzHxffVRbzrxx5M0PzMysuKeMheETjlN76hGBqjn4Pa%2B4MlEyuxUoaX2Q08RXfbEaEb4ToYPGBZkQ9%2BlT%2BHGDLh1Nosdd8FJ7Ye%2BG1AGrSIIW3h2IYBhTbtrASExYUIQ0sbbcgbg8%2F%2FJFcLXVIY6jZIMl953o2lm7F4eDaL%2Bov%2BMQ%2FtlEO3Y5%2Bx3yqSQAFXoBJ8o%2BOUj4EGp7jtD9RtrKvxYCx1JYfMxby%2FMAu9eF3P6yliyBcPV8XF5%2B4VX%2BKlkqoN1EMrZRu4DqNUWXeyFc5VKRZ3Q%2FgSvNRcS%2FAyV04yne1%2BNWvruEZ2gb6dRsLj1AYo7%2Bq8LWdYFD%2F6OUzYWlR%2BeRhjhi33Ye4Vf0wwUilCSyKxOqNWnJukocYswEo5RmsVQ0w%2Fgwoku8YlbryEN4FVpPOvWAR5QKv7QRVapC9NZGFVWyR50gCs7cvQLsBRIxxpRm6I30iPgnqpu%2B%2BqSvp29urfafukb%2FbfuACF1UAQ2rg2VXnutC%2FaayA5eO%2Fg3cpIJ7zZZLs%2B6sU9eNWGEWb6G0ZklUyp1jCtu9W8BjrdAhLkG4OnFqhBishsJ%2B62q2NvIPT7lPrsPfUMQe0uWci2SpdUU%2FkRvszAxMM1i5jVvkL4C%2BmbE4TSygx9Z1FmJc95TqH7x9Ep6mhJA%2BLNGLnkj4hvrv5LnJ9Kijkt5jNEdgg%2BEMTRbb9ZgkjVcNBOs%2FgKGqGLSpt3C3P45yxWRUDxzpZzeSKbfkh2FRSSYFmFNg58pqpJeafUlz7IlEeVm2ifdV4EXDyWoY2jLu55uZ8p6AbPf%2FnDKTqMDV5%2BIMRLK8PDj9JAgSS4EfRomRIyZJHC3lhHQiENgTcGESKOmtZe0%2B3CjhwQnLbExJkxvyyzcbRDf7UHF31bgWr8aNdpsxYt%2FNUoxepQUKQtLMk7U4FtMUWKRaaIympUQN1o9fMFTLh88sNVoCkjzdklbfzbb9T%2FP5RzWqMHpbqihmT27aOy0uvDpRoebbA%2FmbFaTHJrbdpp8Tf9TKMDuRBUhNY%3D&X-Amz-Signature=d5ae1f21edd32846ad0a98c89c51e8c82480a6876e1c3f7b13d9f22bdb91b66c"
+                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp"
                 imageAlt="Recette"
                 prepTime="15min"
                 avatarSrc="https://github.com/shadcn.png"
@@ -81,7 +91,7 @@ export default function Home() {
                 postedAgo="1 jour"
               />
               <RecipeCard
-                imageSrc="https://recipesappea0631f8364f439bb0004d59ea016d09234552-production.s3.eu-west-3.amazonaws.com/public/images/recipes/1731324644265-couscous.jpeg?x-amz-content-sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAXYKJSITNZTVR2IVR%2F20250125%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20250125T215453Z&X-Amz-SignedHeaders=host&X-Amz-Expires=900&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEC4aCWV1LXdlc3QtMyJHMEUCIAW9ISCdsyjczzqkaXiv2WPI%2FNCOwq0%2FHtTFcjTMucQaAiEAp0EWsQV5LRk3fB7tZ1eXQ4gyYVLxVDPV4JoJlWFCcG8qyQUINxAAGgw1MzMyNjcxMDQ5ODciDCW6HiTvvIFntnIjsCqmBQ%2FyAyGBpRezJrBLT7SlqxRNhZpBdafM4O7twIL4dmRK15P28EoPhKr2B%2F2MyZrPZFDg%2BKe8uS6dFbcz7au88PR6HWlMQ8ynym6LJSBVC0mAgsE2S8pQ%2FonFBD7weEPDvyIB9%2BGoAnT1Ji9dD%2FdFJKfTdmg%2FKm6l5cFtVDcvpT5pYiTMFY%2FGRzj2KEWdXTyO0P8gfK3uZdAGXrMuaM0n4kc6YCVafSBbXXjDKhc762CyixvOcLsLvH47kGQhDtOdbCWaRAIkbxtEtxPuIAmFy9%2BbDRf5BY2aqy3Bdlr9lBFEDuTi4L4IkQrP3isAJMwbnPHXKAchkgySmhjlS%2B9YgAZZimK2w5gA1jCKINuxtIzHxffVRbzrxx5M0PzMysuKeMheETjlN76hGBqjn4Pa%2B4MlEyuxUoaX2Q08RXfbEaEb4ToYPGBZkQ9%2BlT%2BHGDLh1Nosdd8FJ7Ye%2BG1AGrSIIW3h2IYBhTbtrASExYUIQ0sbbcgbg8%2F%2FJFcLXVIY6jZIMl953o2lm7F4eDaL%2Bov%2BMQ%2FtlEO3Y5%2Bx3yqSQAFXoBJ8o%2BOUj4EGp7jtD9RtrKvxYCx1JYfMxby%2FMAu9eF3P6yliyBcPV8XF5%2B4VX%2BKlkqoN1EMrZRu4DqNUWXeyFc5VKRZ3Q%2FgSvNRcS%2FAyV04yne1%2BNWvruEZ2gb6dRsLj1AYo7%2Bq8LWdYFD%2F6OUzYWlR%2BeRhjhi33Ye4Vf0wwUilCSyKxOqNWnJukocYswEo5RmsVQ0w%2Fgwoku8YlbryEN4FVpPOvWAR5QKv7QRVapC9NZGFVWyR50gCs7cvQLsBRIxxpRm6I30iPgnqpu%2B%2BqSvp29urfafukb%2FbfuACF1UAQ2rg2VXnutC%2FaayA5eO%2Fg3cpIJ7zZZLs%2B6sU9eNWGEWb6G0ZklUyp1jCtu9W8BjrdAhLkG4OnFqhBishsJ%2B62q2NvIPT7lPrsPfUMQe0uWci2SpdUU%2FkRvszAxMM1i5jVvkL4C%2BmbE4TSygx9Z1FmJc95TqH7x9Ep6mhJA%2BLNGLnkj4hvrv5LnJ9Kijkt5jNEdgg%2BEMTRbb9ZgkjVcNBOs%2FgKGqGLSpt3C3P45yxWRUDxzpZzeSKbfkh2FRSSYFmFNg58pqpJeafUlz7IlEeVm2ifdV4EXDyWoY2jLu55uZ8p6AbPf%2FnDKTqMDV5%2BIMRLK8PDj9JAgSS4EfRomRIyZJHC3lhHQiENgTcGESKOmtZe0%2B3CjhwQnLbExJkxvyyzcbRDf7UHF31bgWr8aNdpsxYt%2FNUoxepQUKQtLMk7U4FtMUWKRaaIympUQN1o9fMFTLh88sNVoCkjzdklbfzbb9T%2FP5RzWqMHpbqihmT27aOy0uvDpRoebbA%2FmbFaTHJrbdpp8Tf9TKMDuRBUhNY%3D&X-Amz-Signature=d5ae1f21edd32846ad0a98c89c51e8c82480a6876e1c3f7b13d9f22bdb91b66c"
+                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg"
                 imageAlt="Dessert"
                 prepTime="20min"
                 avatarSrc="https://github.com/shadcn.png"
