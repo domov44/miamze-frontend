@@ -1,52 +1,77 @@
-'use client'
+'use client';
 import { useState } from 'react';
-import { Card, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Calendar, Home, Inbox} from "lucide-react"
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import Link from 'next/link';
+import { useAuth } from '../contexts/authContext';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logique de connexion ici
-    console.log('Connexion avec:', { email, password });
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('username ou mot de passe incorrect');
+      }
+
+      const data = await response.json();
+      await login(data.access_token);
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+
   return (
-    <div className="flex justify-center items-center h-screen">
-      <Card className="w-96 h-fit">
-        <CardTitle className="text-center text-xl font-semibold">
+    <div className="flex justify-center items-center h-screen w-full">
+      <Card className="max-w-xl w-full shadow-lg p-6">
+        <CardTitle className="text-center text-xl font-semibold mb-4">
           Connexion à votre compte
         </CardTitle>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email input avec icône */}
-            <div className="flex items-center space-x-2">
-              <Calendar className="text-gray-500" />
-              <div className="w-full">
-                <Label htmlFor="email">Email</Label>
+            <div>
+              <Label htmlFor="pseudo">Nom d'utilisateur</Label>
+              <div className="relative flex items-center">
+                <Mail className="absolute left-3 text-gray-500" size={20} />
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="Votre email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="pseudo"
+                  type="text"
+                  placeholder="Votre nom d'utilisateur"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="mt-2"
+                  className="pl-10"
                 />
               </div>
             </div>
 
-            {/* Mot de passe avec icône et bouton pour afficher/cacher */}
-            <div className="flex items-center space-x-2">
-              <Calendar className="text-gray-500" />
-              <div className="w-full relative">
-                <Label htmlFor="password">Mot de passe</Label>
+            <div>
+              <Label htmlFor="password">Mot de passe</Label>
+              <div className="relative flex items-center">
+                <Lock className="absolute left-3 text-gray-500" size={20} />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -54,34 +79,29 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="mt-2"
+                  className="pl-10 pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-1/2 right-3 transform -translate-y-1/2"
+                  className="absolute right-3 text-gray-500"
                 >
-                  {showPassword ? (
-                    <Home className="w-5 h-5 text-gray-500" />
-                  ) : (
-                    <Inbox className="w-5 h-5 text-gray-500" />
-                  )}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
 
-            {/* Bouton de connexion */}
-            <Button type="submit" className="w-full mt-4">
-              Se connecter
+            {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+            <Button type="submit" className="w-full mt-4" disabled={loading}>
+              {loading ? 'Connexion...' : 'Se connecter'}
             </Button>
           </form>
         </CardContent>
-
-        {/* Footer avec un lien pour réinitialiser le mot de passe */}
         <CardFooter className="text-center text-sm text-gray-500">
-          <a href="#" className="text-blue-600 hover:underline">
-            Mot de passe oublié ?
-          </a>
+          <Link href="/inscription" className="text-blue-600 hover:underline">
+            Pas encore de compte ? Inscrivez-vous gratuitement.
+          </Link>
         </CardFooter>
       </Card>
     </div>
