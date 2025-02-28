@@ -36,8 +36,12 @@ export default function LoginPage() {
       const data = await response.json();
       await login(data.access_token);
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -53,7 +57,7 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="pseudo">Nom d'utilisateur</Label>
+              <Label htmlFor="pseudo">Nom d&apos;utilisateur</Label>
               <div className="relative flex items-center">
                 <Mail className="absolute left-3 text-gray-500" size={20} />
                 <Input

@@ -1,10 +1,18 @@
 'use client'
 
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
 
+interface User {
+    id: string;
+    name: string;
+    surname: string;
+    email: string;
+    username: string;
+}
+
 interface AuthContextType {
-    user: any;
+    user: User | null;
     isAuthenticated: boolean | null;
     login: (token: string) => void;
     logout: () => void;
@@ -15,8 +23,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+    const fetchUser = useCallback(async (): Promise<void> => {
+        const token = Cookies.get('access_token');
+        if (token) {
+            const response = await fetch(`${apiUrl}/users/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (response.ok) {
+                const data: User = await response.json();
+                setUser(data);
+                setIsAuthenticated(true);
+            } else {
+                setIsAuthenticated(false);
+                setUser(null);
+            }
+        }
+    }, [apiUrl]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -28,26 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
         };
         checkAuth();
-    }, []);
-
-    const fetchUser = async () => {
-        const token = Cookies.get('access_token');
-        if (token) {
-            const response = await fetch(`${apiUrl}/users/me`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            if (response.ok) {
-                const data = await response.json();
-                setUser(data);
-                setIsAuthenticated(true);
-            } else {
-                setIsAuthenticated(false);
-                setUser(null);
-            }
-        }
-    };
+    }, [fetchUser]);
 
     const login = (token: string) => {
         Cookies.set('access_token', token, { expires: 1 });
