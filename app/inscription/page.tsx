@@ -4,7 +4,7 @@ import { Card, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SignupPage() {
@@ -15,7 +15,6 @@ export default function SignupPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -43,8 +42,12 @@ export default function SignupPage() {
 
             const data = await response.json();
             console.log('Réponse de l’API :', data);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('An unknown error occurred');
+            }
         } finally {
             setLoading(false);
         }
@@ -59,7 +62,7 @@ export default function SignupPage() {
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <Label htmlFor="username">Nom d'utilisateur</Label>
+                            <Label htmlFor="username">Nom d&apos;utilisateur</Label>
                             <div className="relative flex items-center">
                                 <User className="absolute left-3 text-gray-500" size={20} />
                                 <Input
@@ -120,7 +123,7 @@ export default function SignupPage() {
                                 <Lock className="absolute left-3 text-gray-500" size={20} />
                                 <Input
                                     id="password"
-                                    type={showPassword ? 'text' : 'password'}
+                                    type='password'
                                     placeholder="Votre mot de passe"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -136,7 +139,7 @@ export default function SignupPage() {
                                 <Lock className="absolute left-3 text-gray-500" size={20} />
                                 <Input
                                     id="confirmPassword"
-                                    type={showPassword ? 'text' : 'password'}
+                                    type='password'
                                     placeholder="Confirmez votre mot de passe"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
