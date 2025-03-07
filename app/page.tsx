@@ -1,47 +1,96 @@
+'use client'
 import RecipeCard from "@/components/recipe-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
+import { useAuth } from "./contexts/authContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default async function Home() {
+async function fetchData() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  console.log("API URL:", apiUrl);
-
   const res = await fetch(`${apiUrl}/`, {
     cache: "no-store",
   });
 
-  const data = await res.json();
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
 
-  console.log(data)
+  return res.json();
+}
+
+export default function Home() {
+
+  const data = fetchData();
+
+  const { isAuthenticated, user } = useAuth();
+
   return (
     <div className="grid grid-cols-[1.5fr_1fr] gap-8 p-2 pt-10 w-full max-w-5xl">
       <div className="flex flex-col gap-10">
-        <Card className="w-full overflow-hidden shadow-lg">
-          <div className="flex flex-col justify-center p-4 pb-2">
-            <div className="flex gap-1 items-center">
-              <Avatar className="w-5 h-5">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <CardDescription className="text-sm text-gray-500">
-                Bonjour <span className="font-medium">Ronan</span>👋
-              </CardDescription>
+        {isAuthenticated && user ? (
+          <Card className="w-full overflow-hidden shadow-lg">
+            <div className="flex flex-col justify-center p-4 pb-2">
+              <div className="flex gap-1 items-center">
+                <Avatar className="w-5 h-5">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <CardDescription className="text-sm text-gray-500">
+                  Bonjour <span className="font-medium">{user.name}</span>👋
+                </CardDescription>
+              </div>
+              <CardTitle className="text-lg font-semibold">
+                On cuisine quoi aujourd&apos;hui?
+              </CardTitle>
             </div>
-            <CardTitle className="text-lg font-semibold">
-              On cuisine quoi aujourd&apos;hui?
-            </CardTitle>
-          </div>
-          <CardFooter className="flex gap-2 p-4 pt-2">
-            <Button className="text-sm">
-              Ajouter une recette
-            </Button>
-            <Button variant="outline" className="text-sm">
-              Gérer mes recettes
-            </Button>
-          </CardFooter>
-        </Card>
+            <CardFooter className="flex gap-2 p-4 pt-2">
+              <Button className="text-sm">
+                Ajouter une recette
+              </Button>
+              <Button variant="outline" className="text-sm">
+                Gérer mes recettes
+              </Button>
+            </CardFooter>
+          </Card>
+        ) :
+          isAuthenticated === false && user === null ? (
+            <Card className="w-full overflow-hidden shadow-lg">
+              <div className="flex flex-col justify-center p-4 pb-2">
+                <div className="flex gap-1 items-center">
+                  <CardDescription className="text-sm text-gray-500">
+                    Bonjour, <span className="font-medium">vous n&apos;êtes pas connecté</span>👋
+                  </CardDescription>
+                </div>
+                <CardTitle className="text-lg font-semibold">
+                  Rejoignez Miamze pour partager vos recettes
+                </CardTitle>
+              </div>
+              <CardFooter className="flex gap-2 p-4 pt-2">
+                <Button className="text-sm" href="/se-connecter">
+                  Se connecter
+                </Button>
+                <Button variant="outline" className="text-sm" href="/inscription">
+                  Créer un compte gratuitement
+                </Button>
+              </CardFooter>
+            </Card>
+          ) : (
+            <Card className="w-full overflow-hidden shadow-lg">
+              <div className="flex flex-col justify-center p-4 pb-2">
+                <div className="flex gap-1 items-center">
+                  <Skeleton className="w-5 h-5 rounded-full" />
+                  <Skeleton className="h-4 mt-2 w-32" />
+                </div>
+                <Skeleton className="h-4 mt-2 w-40" />
+              </div>
+              <CardFooter className="flex gap-2 p-4 pt-2">
+                <Skeleton className="w-28 h-8" />
+                <Skeleton className="w-28 h-8" />
+              </CardFooter>
+            </Card>
+          )}
         <Tabs defaultValue="explorer" className="w-full">
           <TabsList className="flex justify-start gap-4 p-2">
             <TabsTrigger value="explorer" className="text-sm font-medium">
