@@ -23,6 +23,7 @@ async function fetchData() {
 export default function Home() {
 
   const data = fetchData();
+  console.log(data)
 
   const { isAuthenticated, user } = useAuth();
 
