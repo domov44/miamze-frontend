@@ -1,15 +1,16 @@
 "use client"
- 
+
 import * as React from "react"
 import {
   Calculator,
   Calendar,
   CreditCard,
+  Search,
   Settings,
   Smile,
   User,
 } from "lucide-react"
- 
+
 import {
   CommandDialog,
   CommandEmpty,
@@ -20,30 +21,37 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
- 
+import { SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar"
+
 export function CommandMenu() {
   const [open, setOpen] = React.useState(false)
- 
+
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === "s" && (e.metaKey || e.ctrlKey)) {
+      if (e.key === "r" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setOpen((open) => !open)
       }
     }
- 
+
     document.addEventListener("keydown", down)
     return () => document.removeEventListener("keydown", down)
   }, [])
- 
+
   return (
     <>
-      <p className="text-sm text-muted-foreground">
-        Appuyez sur{" "}
-        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">⌘</span>S
-        </kbd>
-      </p>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild onClick={() => setOpen(true)}>
+          <span className="flex items-center gap-2 cursor-pointer">
+            <Search className="w-4 h-4" />
+            Rechercher {" "}
+            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+              <span className="text-xs">⌘</span>R
+            </kbd>
+          </span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
