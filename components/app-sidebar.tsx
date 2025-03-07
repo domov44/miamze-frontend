@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, ChevronUp, Home, Inbox, Plus, Search, Settings } from "lucide-react";
+import { ChevronUp, Home, Plus, Settings } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupAction, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -12,11 +12,26 @@ import { Button } from "./ui/button";
 
 const items = [
   { title: "Découvrir", url: "/", icon: Home },
-  { title: "Inbox", url: "/se-connecter", icon: Inbox },
-  { title: "Calendar", url: "#", icon: Calendar },
-  { title: "Search", url: "#", icon: Search },
-  { title: "Settings", url: "#", icon: Settings },
+  { title: "Paramètres", url: "#", icon: Settings },
 ];
+
+const recipes = [
+  {
+    id: 1,
+    name: "Pâtes Carbonara",
+    image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg",
+  },
+  {
+    id: 2,
+    name: "Salade César",
+    image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp",
+  },
+  {
+    id: 3,
+    name: "Tarte aux pommes",
+    image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg",
+  },
+]
 
 export function AppSidebar() {
   const { isAuthenticated, user } = useAuth();
@@ -25,7 +40,13 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <CommandMenu />
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <CommandMenu />
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -45,26 +66,22 @@ export function AppSidebar() {
 
         {isAuthenticated && user ? (
           <SidebarGroup>
-            <SidebarGroupLabel>Recettes</SidebarGroupLabel>
-            <SidebarGroupAction title="Add Recipe">
-              <Plus /> <span className="sr-only">Add Recipe</span>
+            <SidebarGroupLabel>Vos ecettes</SidebarGroupLabel>
+            <SidebarGroupAction title="Ajouter une recette">
+              <Plus /> <span className="sr-only">Ajouter une recette</span>
             </SidebarGroupAction>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link href="/ajouter-recette">
-                      <span>Ajouter une recette</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link href="/mes-recettes">
-                      <span>Mes recettes</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {recipes.map((recipe) => (
+                  <SidebarMenuItem key={recipe.id}>
+                    <SidebarMenuButton asChild>
+                      <Link href={`/recette/${recipe.id}`} className="flex items-center gap-2">
+                        <img src={recipe.image} alt={recipe.name} width={24} height={24} className="w-5 h-5 rounded-md object-cover"></img>
+                        <span>{recipe.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
