@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../contexts/authContext';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -16,6 +18,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +38,8 @@ export default function LoginPage() {
 
       const data = await response.json();
       await login(data.access_token);
+      router.push('/');
+      toast(`Bienvenue sur Miamze`)
 
     } catch (err: unknown) {
       if (err instanceof Error) {

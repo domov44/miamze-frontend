@@ -66,9 +66,11 @@ export function AppSidebar() {
 
         {isAuthenticated && user ? (
           <SidebarGroup>
-            <SidebarGroupLabel>Vos ecettes</SidebarGroupLabel>
+            <SidebarGroupLabel>Vos recettes</SidebarGroupLabel>
             <SidebarGroupAction title="Ajouter une recette">
-              <Plus /> <span className="sr-only">Ajouter une recette</span>
+              <Link href={"/ajouter-une-recette"}>
+                <Plus /> <span className="sr-only">Ajouter une recette</span>
+              </Link>
             </SidebarGroupAction>
             <SidebarGroupContent>
               <SidebarMenu>
