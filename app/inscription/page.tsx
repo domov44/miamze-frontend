@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -17,6 +19,7 @@ export default function SignupPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,8 +43,9 @@ export default function SignupPage() {
                 throw new Error('Erreur lors de l’inscription');
             }
 
-            const data = await response.json();
-            console.log('Réponse de l’API :', data);
+            await response.json();
+            router.push('/se-connecter');
+            toast(`Parfait, maintenant veuillez-vous connecter`)
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message);
