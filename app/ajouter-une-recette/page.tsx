@@ -311,7 +311,7 @@ export default function AddRecipePage() {
                                                     {isDragging ? "Déposez l'image ici" : "Cliquez ou glissez une image ici"}
                                                 </p>
                                                 <p className="text-xs text-gray-500">
-                                                    PNG, JPG, WEBP jusqu'à 5MB
+                                                    PNG, JPG, WEBP jusqu&apos;à 5MB
                                                 </p>
                                             </div>
                                         </div>
