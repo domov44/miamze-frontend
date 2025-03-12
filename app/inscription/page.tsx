@@ -8,6 +8,7 @@ import { Mail, Lock, User } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../contexts/authContext';
 
 export default function SignupPage() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -20,6 +21,7 @@ export default function SignupPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { login } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,24 +35,39 @@ export default function SignupPage() {
         }
 
         try {
-            const response = await fetch(`${apiUrl}/auth/register`, {
+            const registerResponse = await fetch(`${apiUrl}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, name, surname, email, password }),
             });
 
-            if (!response.ok) {
+            if (!registerResponse.ok) {
                 throw new Error('Erreur lors de l’inscription');
             }
 
-            await response.json();
-            router.push('/se-connecter');
-            toast(`Parfait, maintenant veuillez-vous connecter`)
+            await registerResponse.json();
+
+            const loginResponse = await fetch(`${apiUrl}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (!loginResponse.ok) {
+                throw new Error('Erreur lors de la connexion après inscription');
+            }
+
+            const loginData = await loginResponse.json();
+            await login(loginData.access_token);
+
+            router.push('/');
+            toast(`Bienvenue sur Miamze`);
+
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError('An unknown error occurred');
+                setError('Une erreur inconnue est survenue');
             }
         } finally {
             setLoading(false);
