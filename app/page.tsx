@@ -7,23 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/com
 import { useAuth } from "./contexts/authContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
-async function fetchData() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const res = await fetch(`${apiUrl}/`, {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-
-  return res.json();
-}
-
 export default function Home() {
-
-  const data = fetchData();
-  console.log(data)
 
   const { isAuthenticated, user } = useAuth();
 
@@ -47,10 +31,10 @@ export default function Home() {
               </CardTitle>
             </div>
             <CardFooter className="flex gap-2 p-4 pt-2">
-              <Button className="text-sm">
+              <Button className="text-sm" href="/ajouter-une-recette">
                 Ajouter une recette
               </Button>
-              <Button variant="outline" className="text-sm">
+              <Button variant="outline" className="text-sm" href="/mes-recettes">
                 Gérer mes recettes
               </Button>
             </CardFooter>
