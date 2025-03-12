@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Circle, Upload, X, ImageIcon, Plus, Trash } from "lucide-react";
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown } from "lucide-react";
+import { confirm } from "@/hooks/confirm/ConfirmGlobal";
 
 import { cn } from "@/lib/utils"
 import {
@@ -204,11 +205,24 @@ export default function AddRecipePage() {
         setRecipe({ ...recipe, ingredients: updatedIngredients });
     };
 
-    const removeIngredient = (index: number) => {
-        setRecipe({
-            ...recipe,
-            ingredients: recipe.ingredients.filter((_, i) => i !== index),
-        });
+    const removeIngredient = async (index: number) => {
+        try {
+            const confirmed = await confirm({
+                title: "Voulez-vous vraiment supprimer cet ingrédient ?",
+                content: "Cette ingrédient sera supprimé de la recette.",
+            });
+
+            if (confirmed) {
+                setRecipe({
+                    ...recipe,
+                    ingredients: recipe.ingredients.filter((_, i) => i !== index),
+                });
+                toast.success("Ingrédient supprimé.");
+            }
+        } catch (error) {
+            toast.error("Erreur lors de la suppression de l'ingrédient.");
+            console.error("Erreur lors de la suppression de l'ingrédient :", error);
+        }
     };
 
     const addStep = () => {
@@ -229,11 +243,24 @@ export default function AddRecipePage() {
         setRecipe({ ...recipe, steps: updatedSteps });
     };
 
-    const removeStep = (index: number) => {
-        setRecipe({
-            ...recipe,
-            steps: recipe.steps.filter((_, i) => i !== index),
-        });
+    const removeStep = async (index: number) => {
+        try {
+            const confirmed = await confirm({
+                title: "Voulez-vous vraiment supprimer cette étape ?",
+                content: "Cette étape sera supprimée de la recette.",
+            });
+
+            if (confirmed) {
+                setRecipe({
+                    ...recipe,
+                    steps: recipe.steps.filter((_, i) => i !== index),
+                });
+                toast.success("Etape supprimée.");
+            }
+        } catch (error) {
+            toast.error("Erreur lors de la suppression de l'étape.");
+            console.error("Erreur lors de la suppression de l'étape :", error);
+        }
     };
 
     const submitRecipe = () => {
