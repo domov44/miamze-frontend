@@ -208,9 +208,8 @@ export default function AddRecipePage() {
     const removeIngredient = async (index: number) => {
         try {
             const confirmed = await confirm({
-                title: "Voulez-vous vraiment supprimer votre recette ?",
-                content: "Votre recette sera supprimée de l'application",
-                variant: "danger"
+                title: "Voulez-vous vraiment supprimer cet ingrédient ?",
+                content: "Cette ingrédient sera supprimé de la recette.",
             });
 
             if (confirmed) {
@@ -244,11 +243,24 @@ export default function AddRecipePage() {
         setRecipe({ ...recipe, steps: updatedSteps });
     };
 
-    const removeStep = (index: number) => {
-        setRecipe({
-            ...recipe,
-            steps: recipe.steps.filter((_, i) => i !== index),
-        });
+    const removeStep = async (index: number) => {
+        try {
+            const confirmed = await confirm({
+                title: "Voulez-vous vraiment supprimer cette étape ?",
+                content: "Cette étape sera supprimée de la recette.",
+            });
+
+            if (confirmed) {
+                setRecipe({
+                    ...recipe,
+                    steps: recipe.steps.filter((_, i) => i !== index),
+                });
+                toast.success("Etape supprimée.");
+            }
+        } catch (error) {
+            toast.error("Erreur lors de la suppression de l'étape.");
+            console.error("Erreur lors de la suppression de l'étape :", error);
+        }
     };
 
     const submitRecipe = () => {
