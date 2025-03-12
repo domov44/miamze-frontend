@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Circle, Upload, X, ImageIcon, Plus, Trash } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "@/components/ui/command"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface Ingredient {
+    id: number;
     name: string;
     quantity: string;
 }
@@ -33,7 +50,10 @@ interface Recipe {
 }
 
 export default function AddRecipePage() {
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [currentStep, setCurrentStep] = useState<number>(1);
+    const [open, setOpen] = useState(false)
+    const [selectedIngredientIndex, setSelectedIngredientIndex] = useState<number | null>(null)
     const [recipe, setRecipe] = useState<Recipe>({
         name: "",
         image: "",
@@ -42,6 +62,7 @@ export default function AddRecipePage() {
         ingredients: [],
         steps: [],
     });
+
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
@@ -53,6 +74,28 @@ export default function AddRecipePage() {
         { id: 4, title: "Étapes de préparation" }
     ];
 
+    useEffect(() => {
+        async function fetchIngredients() {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+                const res = await fetch(`${apiUrl}/ingredients`, {
+                    cache: "no-store",
+                });
+
+                if (!res.ok) {
+                    throw new Error("Failed to fetch data");
+                }
+
+                const data = await res.json();
+                setIngredients(data);
+            } catch (error) {
+                console.error("Error fetching ingredients:", error);
+            }
+        }
+
+        fetchIngredients();
+    }, []);
+
     const isStepValid = (step: number): boolean => {
         switch (step) {
             case 1:
@@ -60,7 +103,7 @@ export default function AddRecipePage() {
             case 2:
                 return recipe.category.trim() !== "" && recipe.description.trim() !== "";
             case 3:
-                return recipe.ingredients.length > 0 && recipe.ingredients.every(ing => ing.name.trim() !== "" && ing.quantity.trim() !== "");
+                return recipe.ingredients.length > 0 && recipe.ingredients.every(ingredient => ingredient.name.trim() !== "" && ingredient.quantity.trim() !== "");
             case 4:
                 return recipe.steps.length > 0 && recipe.steps.every(st => st.title.trim() !== "" && st.description.trim() !== "" && st.duration.trim() !== "");
             default:
@@ -152,12 +195,12 @@ export default function AddRecipePage() {
     };
 
     const addIngredient = () => {
-        setRecipe({ ...recipe, ingredients: [...recipe.ingredients, { name: "", quantity: "" }] });
+        setRecipe({ ...recipe, ingredients: [...recipe.ingredients, { id: 0, name: "", quantity: "" }] });
     };
 
-    const updateIngredient = (index: number, key: keyof Ingredient, value: string) => {
+    const updateIngredient = (index: number, key: keyof Ingredient, value: string | number | null) => {
         const updatedIngredients = [...recipe.ingredients];
-        updatedIngredients[index][key] = value;
+        updatedIngredients[index] = { ...updatedIngredients[index], [key]: value };
         setRecipe({ ...recipe, ingredients: updatedIngredients });
     };
 
@@ -360,30 +403,75 @@ export default function AddRecipePage() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <Label className="text-sm font-medium">Ingrédients</Label>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={addIngredient}
-                                >
-                                    <Plus /> Ajouter un ingrédient
-                                </Button>
                             </div>
 
                             {recipe.ingredients.length === 0 ? (
-                                <div className="text-center py-8 text-gray-500">
-                                    Aucun ingrédient ajouté. Cliquez sur le bouton pour ajouter votre premier ingrédient.
-                                </div>
+                                <>
+                                    <div className="text-center py-8 text-gray-500">
+                                        Aucun ingrédient ajouté. Cliquez sur le bouton pour ajouter votre premier ingrédient.
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={addIngredient}
+                                    >
+                                        <Plus /> Ajouter un ingrédient
+                                    </Button>
+                                </>
                             ) : (
                                 <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
                                     {recipe.ingredients.map((ingredient, index) => (
                                         <div key={index} className="flex gap-2 items-center p-3 rounded-md border">
-                                            <div className="w-1/3">
-                                                <Input
-                                                    placeholder="Nom de l'ingrédient"
-                                                    value={ingredient.name}
-                                                    onChange={(e) => updateIngredient(index, "name", e.target.value)}
-                                                />
-                                            </div>
+                                            <Popover
+                                                open={open && selectedIngredientIndex === index}
+                                                onOpenChange={(isOpen) => {
+                                                    setOpen(isOpen);
+                                                    if (isOpen) setSelectedIngredientIndex(index);
+                                                }}
+                                            >
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        aria-expanded={open && selectedIngredientIndex === index}
+                                                        className="w-[200px] justify-between"
+                                                    >
+                                                        {ingredient.name
+                                                            ? ingredient.name
+                                                            : "Choisir un ingrédient..."}
+                                                        <ChevronsUpDown className="opacity-50" />
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-[200px] p-0">
+                                                    <Command>
+                                                        <CommandInput placeholder="Rechercher un ingrédient..." className="h-9" />
+                                                        <CommandList>
+                                                            <CommandEmpty>Aucun ingrédient trouvé.</CommandEmpty>
+                                                            <CommandGroup>
+                                                                {ingredients.map((ingredient) => (
+                                                                    <CommandItem
+                                                                        key={ingredient.id}
+                                                                        value={ingredient.id.toString()}
+                                                                        onSelect={() => {
+                                                                            updateIngredient(index, "id", ingredient.id);
+                                                                            updateIngredient(index, "name", ingredient.name);
+                                                                            setOpen(false);
+                                                                        }}
+                                                                    >
+                                                                        {ingredient.name}
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "ml-auto",
+                                                                                recipe.ingredients[index]?.id === ingredient.id ? "opacity-100" : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        </CommandList>
+                                                    </Command>
+                                                </PopoverContent>
+                                            </Popover>
                                             <div className="w-1/3">
                                                 <Input
                                                     placeholder="Quantité"
@@ -402,6 +490,13 @@ export default function AddRecipePage() {
                                             </div>
                                         </div>
                                     ))}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={addIngredient}
+                                    >
+                                        <Plus /> Ajouter un ingrédient
+                                    </Button>
                                 </div>
                             )}
                         </div>
