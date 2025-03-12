@@ -61,7 +61,7 @@ export default function SignupPage() {
             await login(loginData.access_token);
 
             router.push('/');
-            toast(`Bienvenue sur Miamze`);
+            toast.success(`Connexion établie, bienvenue sur Miamze`)
 
         } catch (err: unknown) {
             if (err instanceof Error) {

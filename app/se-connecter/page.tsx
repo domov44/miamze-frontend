@@ -39,7 +39,7 @@ export default function LoginPage() {
       const data = await response.json();
       await login(data.access_token);
       router.push('/');
-      toast(`Bienvenue sur Miamze`)
+      toast.success(`Connexion établie, bienvenue sur Miamze`)
 
     } catch (err: unknown) {
       if (err instanceof Error) {
