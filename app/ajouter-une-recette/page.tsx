@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Circle, Upload, X, ImageIcon, Plus, Trash } from "lucide-react";
+import { CheckCircle, Circle, Plus, Trash } from "lucide-react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { confirm } from "@/hooks/confirm/ConfirmGlobal";
+import ImageUploader from "@/components/custom/ui/image-uploader";
+import { fetchIngredients } from "../services/ingredient";
+import { fetchCategories } from "../services/category";
 
 import { cn } from "@/lib/utils"
 import {
@@ -27,6 +30,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import { getToken } from "../utils/auth";
 
 interface Ingredient {
     id: number;
@@ -51,7 +55,9 @@ interface Recipe {
 }
 
 export default function AddRecipePage() {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [categories, setCategories] = useState<{ id: number; label: string }[]>([]);
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [open, setOpen] = useState(false)
     const [selectedIngredientIndex, setSelectedIngredientIndex] = useState<number | null>(null)
@@ -64,8 +70,6 @@ export default function AddRecipePage() {
         steps: [],
     });
 
-    const [isDragging, setIsDragging] = useState<boolean>(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
     const formSteps = [
@@ -76,25 +80,29 @@ export default function AddRecipePage() {
     ];
 
     useEffect(() => {
-        async function fetchIngredients() {
+        const getIngredients = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                const res = await fetch(`${apiUrl}/ingredients`, {
-                    cache: "no-store",
-                });
-
-                if (!res.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const data = await res.json();
+                const data = await fetchIngredients();
                 setIngredients(data);
             } catch (error) {
                 console.error("Error fetching ingredients:", error);
             }
-        }
+        };
 
-        fetchIngredients();
+        getIngredients();
+    }, []);
+
+    useEffect(() => {
+        const getCategories = async () => {
+            try {
+                const data = await fetchCategories();
+                setCategories(data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+
+        getCategories();
     }, []);
 
     const isStepValid = (step: number): boolean => {
@@ -134,65 +142,6 @@ export default function AddRecipePage() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setRecipe({ ...recipe, [e.target.name]: e.target.value });
-    };
-
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            processImageFile(e.target.files[0]);
-        }
-    };
-
-    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-    };
-
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            const file = e.dataTransfer.files[0];
-            if (file.type.startsWith('image/')) {
-                processImageFile(file);
-            } else {
-                toast.error("Le fichier doit être une image.");
-            }
-        }
-    };
-
-    const processImageFile = (file: File) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            if (event.target && event.target.result) {
-                setRecipe({ ...recipe, image: event.target.result.toString() });
-                toast.success("Image ajoutée avec succès !");
-            }
-        };
-        reader.readAsDataURL(file);
-    };
-
-    const removeImage = () => {
-        setRecipe({ ...recipe, image: "" });
-    };
-
-    const triggerFileInput = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click();
-        }
     };
 
     const addIngredient = () => {
@@ -263,9 +212,55 @@ export default function AddRecipePage() {
         }
     };
 
-    const submitRecipe = () => {
-        toast.success("Recette ajoutée avec succès !");
-        router.push("/");
+    const submitRecipe = async () => {
+        const recipeToSubmit = {
+            label: recipe.name,
+            categoryId: parseInt(recipe.category),
+            image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp",
+            recipeIngredients: recipe.ingredients.map(ingredient => ({
+                ingredientId: ingredient.id || 1,
+                quantity: ingredient.quantity
+            })),
+            steps: recipe.steps.map(step => ({
+                name: step.title,
+                description: step.description,
+                duration: parseInt(step.duration),
+                preparation: step.type === "preparation"
+            }))
+        };
+
+        console.log(JSON.stringify(recipeToSubmit, null, 2));
+
+        const token = getToken();
+        if (token) {
+            try {
+                const response = await fetch(`${apiUrl}/recipes`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(recipeToSubmit),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Recette ajoutée :', data);
+                    toast.success("Recette ajoutée avec succès !");
+                } else {
+                    console.error('Erreur lors de l\'ajout de la recette:', response.statusText);
+                    toast.error("Erreur lors de l'ajout de la recette !");
+                }
+            } catch (error) {
+                console.error('Erreur réseau ou autre:', error);
+                toast.error("Erreur lors de l'ajout de la recette !");
+            }
+        } else {
+            console.error('Token manquant');
+            toast.error("Token manquant, veuillez vous reconnecter !");
+        }
+
+        router.push("/mes-recettes");
     };
 
     const renderStepIndicator = () => {
@@ -333,60 +328,7 @@ export default function AddRecipePage() {
 
                             <div>
                                 <Label htmlFor="image" className="text-sm font-medium">Image</Label>
-                                <input
-                                    type="file"
-                                    id="image"
-                                    ref={fileInputRef}
-                                    onChange={handleImageUpload}
-                                    accept="image/*"
-                                    className="hidden"
-                                />
-
-                                {recipe.image ? (
-                                    <div className="mt-1 relative rounded-md overflow-hidden">
-                                        <img
-                                            src={recipe.image}
-                                            alt="preview"
-                                            className="w-full h-64 object-cover"
-                                        />
-                                        <Button
-                                            variant="destructive"
-                                            size="icon"
-                                            className="absolute top-2 right-2 rounded-full"
-                                            onClick={removeImage}
-                                        >
-                                            <X size={18} />
-                                        </Button>
-                                    </div>
-                                ) : (
-                                    <div
-                                        className={`mt-1 border-2 border-dashed rounded-md p-8 text-center transition-colors ${isDragging ? "border-primary bg-primary/5" : "border-gray-300"
-                                            }`}
-                                        onDragEnter={handleDragEnter}
-                                        onDragLeave={handleDragLeave}
-                                        onDragOver={handleDragOver}
-                                        onDrop={handleDrop}
-                                        onClick={triggerFileInput}
-                                    >
-                                        <div className="flex flex-col items-center justify-center space-y-2 cursor-pointer">
-                                            <div className="p-4 rounded-full bg-gray-100">
-                                                {isDragging ? (
-                                                    <Upload className="w-8 h-8 text-primary" />
-                                                ) : (
-                                                    <ImageIcon className="w-8 h-8 text-gray-400" />
-                                                )}
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-sm font-medium">
-                                                    {isDragging ? "Déposez l'image ici" : "Cliquez ou glissez une image ici"}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    PNG, JPG, WEBP jusqu&apos;à 5MB
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
+                                <ImageUploader image={recipe.image} setImage={(newImage: string) => setRecipe({ ...recipe, image: newImage })} />
                             </div>
                         </div>
                     )}
@@ -403,11 +345,11 @@ export default function AddRecipePage() {
                                         <SelectValue placeholder="Choisir une catégorie" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="entrée">Entrée</SelectItem>
-                                        <SelectItem value="plat">Plat principal</SelectItem>
-                                        <SelectItem value="dessert">Dessert</SelectItem>
-                                        <SelectItem value="boisson">Boisson</SelectItem>
-                                        <SelectItem value="apéritif">Apéritif</SelectItem>
+                                        {categories.map((category: { id: number, label: string }) => (
+                                            <SelectItem key={category.id} value={category.id.toString()}>
+                                                {category.label}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>

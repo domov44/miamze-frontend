@@ -1,8 +1,7 @@
 'use client'
 
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from 'react';
-import Cookies from 'js-cookie';
-
+import { getToken, setToken, removeToken } from '../utils/auth';
 interface User {
     id: string;
     name: string;
@@ -27,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     const fetchUser = useCallback(async (): Promise<void> => {
-        const token = Cookies.get('access_token');
+        const token = getToken();
         if (token) {
             const response = await fetch(`${apiUrl}/users/me`, {
                 headers: {
@@ -47,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const token = Cookies.get('access_token');
+            const token = getToken();
             if (token) {
                 await fetchUser();
             } else {
@@ -58,12 +57,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, [fetchUser]);
 
     const login = (token: string) => {
-        Cookies.set('access_token', token, { expires: 1 });
+        setToken(token);
         fetchUser();
     };
 
     const logout = () => {
-        Cookies.remove('access_token');
+        removeToken();
         setIsAuthenticated(false);
         setUser(null);
     };
