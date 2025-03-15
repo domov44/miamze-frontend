@@ -260,7 +260,7 @@ export default function AddRecipePage() {
             toast.error("Token manquant, veuillez vous reconnecter !");
         }
 
-        // router.push("/"); // Si tu veux rediriger après l'ajout de la recette
+        router.push("/mes-recettes");
     };
 
     const renderStepIndicator = () => {

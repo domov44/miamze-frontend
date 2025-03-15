@@ -106,7 +106,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ image, setImage }) => {
                             <p className="text-sm font-medium">
                                 {isDragging ? "Déposez l'image ici" : "Cliquez ou glissez une image ici"}
                             </p>
-                            <p className="text-xs text-gray-500">PNG, JPG, WEBP jusqu'à 5MB</p>
+                            <p className="text-xs text-gray-500">PNG, JPG, WEBP jusqu&apos;à 5MB</p>
                         </div>
                     </div>
                 </div>
