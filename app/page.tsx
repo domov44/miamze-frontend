@@ -6,10 +6,59 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
 import { useAuth } from "./contexts/authContext";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchRecipes } from "./services/recipe";
+import { useEffect, useState } from "react";
+import RecipeCardSkeleton from "@/components/skeleton/recipe-card";
 
 export default function Home() {
-
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const { isAuthenticated, user } = useAuth();
+
+  interface Recipe {
+    id: number;
+    label: string;
+    slug: string;
+    image: string;
+    createdAt: string;
+    user?: {
+      username: string;
+    };
+    steps: {
+      name: string;
+      description: string;
+      duration: number;
+      preparation: boolean;
+    }[];
+  }
+
+  const calculatePostedAgo = (createdAt: string) => {
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - creationDate.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return `${diffInSeconds} sec`;
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `${diffInMinutes} min`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours} h`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays} j`;
+  };
+
+
+
+  useEffect(() => {
+    const getRecipes = async () => {
+      try {
+        const data = await fetchRecipes();
+        setRecipes(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    getRecipes();
+  }, []);
 
   return (
     <div className="grid grid-cols-[1.5fr_1fr] gap-8 p-2 pt-10 w-full max-w-5xl">
@@ -87,54 +136,35 @@ export default function Home() {
           </TabsList>
           <TabsContent value="explorer">
             <div className="grid grid-cols-1 gap-8 p-2">
-              <RecipeCard
-                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg"
-                imageAlt="Dessert"
-                prepTime="20min"
-                avatarSrc="https://github.com/shadcn.png"
-                avatarAlt="CN"
-                title="Délicieux Dessert"
-                username="Utilisateur4"
-                views="750K"
-                postedAgo="5 heures"
-              />
-              <RecipeCard
-                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp"
-                imageAlt="Recette"
-                prepTime="15min"
-                avatarSrc="https://github.com/shadcn.png"
-                avatarAlt="CN"
-                title="Recette Rapide"
-                username="Utilisateur3"
-                views="1M"
-                postedAgo="1 jour"
-              />
-            </div>
-          </TabsContent>
-          <TabsContent value="pour-vous">
-            <div className="grid grid-cols-1 gap-8 p-2">
-              <RecipeCard
-                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp"
-                imageAlt="Recette"
-                prepTime="15min"
-                avatarSrc="https://github.com/shadcn.png"
-                avatarAlt="CN"
-                title="Recette Rapide"
-                username="Utilisateur3"
-                views="1M"
-                postedAgo="1 jour"
-              />
-              <RecipeCard
-                imageSrc="https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg"
-                imageAlt="Dessert"
-                prepTime="20min"
-                avatarSrc="https://github.com/shadcn.png"
-                avatarAlt="CN"
-                title="Délicieux Dessert"
-                username="Utilisateur4"
-                views="750K"
-                postedAgo="5 heures"
-              />
+              {recipes.length > 0 ? (
+                recipes.map((recipe) => {
+                  const totalPreparationTime = recipe.steps?.filter(step => step.preparation).reduce((acc, step) => acc + step.duration, 0) || 0;
+                  const totalCookingTime = recipe.steps?.filter(step => !step.preparation).reduce((acc, step) => acc + step.duration, 0) || 0;
+
+                  return (
+                    <RecipeCard
+                      key={recipe.id}
+                      imageSrc={recipe.image}
+                      imageAlt={recipe.label}
+                      slug={recipe.slug}
+                      prepTime={`${totalPreparationTime} min`}
+                      cookTime={`${totalCookingTime} min`}
+                      avatarSrc="https://github.com/shadcn.png"
+                      avatarAlt={recipe.user?.username || "Auteur"}
+                      title={recipe.label}
+                      username={recipe.user?.username || "Utilisateur inconnu"}
+                      views="500K"
+                      postedAgo={calculatePostedAgo(recipe.createdAt)}
+                    />
+                  );
+                })
+              ) : (
+                <div className="grid grid-cols-1 gap-8 p-2">
+                  {[...Array(3)].map((_, index) => (
+                    <RecipeCardSkeleton key={index} />
+                  ))}
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>
