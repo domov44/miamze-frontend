@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import Link from 'next/link';
 import { useAuth } from '../contexts/authContext';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -108,9 +107,9 @@ export default function LoginPage() {
           </form>
         </CardContent>
         <CardFooter className="text-center text-sm text-gray-500">
-          <Link href="/inscription" className="text-blue-600 hover:underline">
+          <Button variant={"link"} href="/inscription">
             Pas encore de compte ? Inscrivez-vous gratuitement.
-          </Link>
+          </Button>
         </CardFooter>
       </Card>
     </div>

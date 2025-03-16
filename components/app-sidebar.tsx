@@ -1,3 +1,4 @@
+// app/components/AppSidebar.tsx
 'use client'
 
 import { ChevronUp, Home, Plus, Settings } from "lucide-react";
@@ -9,32 +10,17 @@ import { useAuth } from "@/app/contexts/authContext";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "./ui/button";
+import React from "react";
+import { useRecipe } from "@/app/contexts/recipeContext";  // Importer le contexte
 
 const items = [
   { title: "Découvrir", url: "/", icon: Home },
   { title: "Paramètres", url: "#", icon: Settings },
 ];
 
-const recipes = [
-  {
-    id: 1,
-    name: "Pâtes Carbonara",
-    image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg",
-  },
-  {
-    id: 2,
-    name: "Salade César",
-    image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp",
-  },
-  {
-    id: 3,
-    name: "Tarte aux pommes",
-    image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/tartes-pommes.jpg",
-  },
-]
-
 export function AppSidebar() {
   const { isAuthenticated, user } = useAuth();
+  const { recipes, loading } = useRecipe(); // Utilisation du contexte des recettes
 
   return (
     <Sidebar>
@@ -74,16 +60,22 @@ export function AppSidebar() {
             </SidebarGroupAction>
             <SidebarGroupContent>
               <SidebarMenu>
-                {recipes.map((recipe) => (
-                  <SidebarMenuItem key={recipe.id}>
-                    <SidebarMenuButton asChild>
-                      <Link href={`/recette/${recipe.id}`} className="flex items-center gap-2">
-                        <img src={recipe.image} alt={recipe.name} width={24} height={24} className="w-5 h-5 rounded-md object-cover"></img>
-                        <span>{recipe.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {recipes.length > 0 ? (
+                  recipes.map((recipe) => (
+                    <SidebarMenuItem key={recipe.id}>
+                      <SidebarMenuButton asChild>
+                        <Link href={`/${user.username}/${recipe.slug}`} className="flex items-center gap-2">
+                          <img src={recipe.image} alt={recipe.label} width={24} height={24} className="w-5 h-5 rounded-md object-cover" />
+                          <span>{recipe.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                ) : loading ? (
+                  <Skeleton className="w-full h-8 rounded-md" />
+                ) : (
+                  <p>Aucune recette disponible</p>
+                )}
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link href={"/mes-recettes"}>
@@ -115,18 +107,39 @@ export function AppSidebar() {
           </SidebarGroup>
         ) : (
           <SidebarGroup>
-            <SidebarGroupLabel>Recettes</SidebarGroupLabel>
+            <SidebarGroupLabel>
+              <Skeleton className="h-2 w-16" />
+            </SidebarGroupLabel>
+            <SidebarGroupAction title="Ajouter une recette">
+              <Skeleton className="h-5 w-5 rounded-md" />
+            </SidebarGroupAction>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <Skeleton className="w-full h-8 rounded-md" />
+                  <SidebarMenuButton asChild>
+                    <div className="flex items-center gap-1">
+                      <Skeleton className="h-5 w-5 rounded-md" />
+                      <Skeleton className="h-2 w-20" />
+                    </div>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <Skeleton className="w-full h-8 rounded-md" />
+                  <SidebarMenuButton asChild>
+                    <div className="flex items-center gap-1">
+                      <Skeleton className="h-5 w-5 rounded-md" />
+                      <Skeleton className="h-2 w-20" />
+                    </div>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <Skeleton className="w-full h-8 rounded-md" />
+                  <SidebarMenuButton asChild>
+                    <div className="flex items-center gap-1">
+                      <Skeleton className="h-5 w-5 rounded-md" />
+                      <Skeleton className="h-2 w-20" />
+                    </div>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
+                <Skeleton className="h-4 w-36" />
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -158,9 +171,7 @@ export function AppSidebar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
-          ) : isAuthenticated === false && user === null ? (
-            null
-          ) : (
+          ) : isAuthenticated === false && user === null ? null : (
             <SidebarMenuItem>
               <div className="flex items-center gap-1">
                 <Skeleton className="w-5 h-5 rounded-full" />
