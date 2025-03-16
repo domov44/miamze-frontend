@@ -12,7 +12,7 @@ import {
     SortingState,
     VisibilityState,
 } from "@tanstack/react-table";
-import { MoreHorizontal, ChevronDown, Trash, Edit2, CheckCircle2 } from "lucide-react";
+import { MoreHorizontal, ChevronDown, Trash, Edit2, CheckCircle2, Utensils, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -239,8 +239,17 @@ export default function RecetteTable() {
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="text-center">
-                                    Aucune recette trouvée.
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    <div className="flex flex-col items-center justify-center space-y-2">
+                                        <Utensils className="h-8 w-8 text-gray-400" />
+                                        <div className="text-lg font-medium">Aucune recette trouvée</div>
+                                        <div className="text-sm text-gray-500">
+                                            Vous n'avez pas encore créé de recette.
+                                        </div>
+                                        <Button variant="outline" href="/ajouter-une-recette" className="mt-2">
+                                            <Plus className="mr-2 h-4 w-4" /> Créer ma première recette
+                                        </Button>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         )}
