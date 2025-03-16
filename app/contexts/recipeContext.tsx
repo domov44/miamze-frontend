@@ -37,6 +37,7 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const fetchRecipes = async () => {
+        setLoading(true);
         const token = getToken();
 
         if (!token || !isAuthenticated) {
@@ -78,7 +79,7 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     useEffect(() => {
         if (isAuthenticated) {
             fetchRecipes();
-        } else {
+        } else if (isAuthenticated === false) {
             setLoading(false);
         }
     }, [isAuthenticated]);
