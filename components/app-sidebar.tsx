@@ -1,4 +1,3 @@
-// app/components/AppSidebar.tsx
 'use client'
 
 import { ChevronUp, Home, Plus, Settings } from "lucide-react";
@@ -11,7 +10,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "./ui/button";
 import React from "react";
-import { useRecipe } from "@/app/contexts/recipeContext";  // Importer le contexte
+import { useRecipe } from "@/app/contexts/recipeContext";
 
 const items = [
   { title: "Découvrir", url: "/", icon: Home },
@@ -20,7 +19,7 @@ const items = [
 
 export function AppSidebar() {
   const { isAuthenticated, user } = useAuth();
-  const { recipes, loading } = useRecipe(); // Utilisation du contexte des recettes
+  const { recipes, loading } = useRecipe();
 
   return (
     <Sidebar>
