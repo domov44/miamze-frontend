@@ -244,7 +244,7 @@ export default function RecetteTable() {
                                         <Utensils className="h-8 w-8 text-gray-400" />
                                         <div className="text-lg font-medium">Aucune recette trouvée</div>
                                         <div className="text-sm text-gray-500">
-                                            Vous n'avez pas encore créé de recette.
+                                            Vous n&apos;avez pas encore créé de recette.
                                         </div>
                                         <Button variant="outline" href="/ajouter-une-recette" className="mt-2">
                                             <Plus className="mr-2 h-4 w-4" /> Créer ma première recette
