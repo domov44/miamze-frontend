@@ -71,9 +71,44 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                   ))
                 ) : loading ? (
-                  <Skeleton className="w-full h-8 rounded-md" />
+                  <>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <div className="flex items-center gap-1">
+                          <Skeleton className="h-5 w-5 rounded-md" />
+                          <Skeleton className="h-2 w-20" />
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <div className="flex items-center gap-1">
+                          <Skeleton className="h-5 w-5 rounded-md" />
+                          <Skeleton className="h-2 w-20" />
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <div className="flex items-center gap-1">
+                          <Skeleton className="h-5 w-5 rounded-md" />
+                          <Skeleton className="h-2 w-20" />
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </>
                 ) : (
-                  <p>Aucune recette disponible</p>
+                  <>
+                    <p className="px-3 py-2 text-sm text-gray-500">Aucune recette disponible</p>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild>
+                        <Link href={"/ajouter-une-recette"} className="flex items-center gap-2">
+                          <Plus className="w-4 h-4" />
+                          <span>Créer ma première recette</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </>
                 )}
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
