@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock, User } from 'lucide-react';
-import Link from 'next/link';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../contexts/authContext';
@@ -178,9 +177,9 @@ export default function SignupPage() {
                     </form>
                 </CardContent>
                 <CardFooter className="text-center text-sm text-gray-500">
-                    <Link href="/se-connecter" className="text-blue-600 hover:underline">
+                    <Button variant={"link"} href="/se-connecter">
                         Déjà un compte ? Connectez-vous
-                    </Link>
+                    </Button>
                 </CardFooter>
             </Card>
         </div>
