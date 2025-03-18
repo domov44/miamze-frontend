@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { fetchRecipes } from "./services/recipe";
 import { useEffect, useState } from "react";
 import RecipeCardSkeleton from "@/components/skeleton/recipe-card";
+import { calculatePostedAgo } from "./utils/calculatePostedAgo";
+import { calculateTotalTime } from "./utils/calculateTotalTime";
 
 export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -30,22 +32,6 @@ export default function Home() {
       preparation: boolean;
     }[];
   }
-
-  const calculatePostedAgo = (createdAt: string) => {
-    const creationDate = new Date(createdAt);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - creationDate.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return `${diffInSeconds} sec`;
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (diffInMinutes < 60) return `${diffInMinutes} min`;
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours} h`;
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} j`;
-  };
-
-
 
   useEffect(() => {
     const getRecipes = async () => {
@@ -138,8 +124,7 @@ export default function Home() {
             <div className="grid grid-cols-1 gap-8 p-2">
               {recipes.length > 0 ? (
                 recipes.map((recipe) => {
-                  const totalPreparationTime = recipe.steps?.filter(step => step.preparation).reduce((acc, step) => acc + step.duration, 0) || 0;
-                  const totalCookingTime = recipe.steps?.filter(step => !step.preparation).reduce((acc, step) => acc + step.duration, 0) || 0;
+                  const { totalPreparationTime, totalCookingTime } = calculateTotalTime(recipe.steps);
 
                   return (
                     <RecipeCard
@@ -165,7 +150,7 @@ export default function Home() {
                   ))}
                 </div>
               )}
-            </div>
+            </div>;
           </TabsContent>
         </Tabs>
       </div>
