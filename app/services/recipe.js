@@ -40,6 +40,25 @@ export const fetchUserRecipes = async (token) => {
     }
 };
 
+export const fetchRecipeBySlug= async (username, slug) => {
+    try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/recipes/${username}/${slug}`, {
+            cache: "no-store",
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch the recipe. Status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching the current recipe:", error);
+        throw error;
+    }
+};
+
 export const deleteRecipe = async (token, id) => {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
