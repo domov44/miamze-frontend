@@ -1,9 +1,9 @@
 import { fetchRecipeBySlug } from "@/app/services/recipe";
 import { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Clock, ChefHat, Flame, CookingPot } from "lucide-react";
+import { Clock, ChefHat, CookingPot } from "lucide-react";
 import { calculateTotalTime } from "@/app/utils/calculateTotalTime";
 import { calculatePostedAgo } from "@/app/utils/calculatePostedAgo";
 
@@ -15,9 +15,30 @@ interface RecipePageProps {
 }
 
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
+    const recipe = await fetchRecipeBySlug(params.username, params.slug);
     return {
-        title: `Recette: ${params.slug}`,
+        title: `Recette: ${recipe.label} par ${params.username}`,
+        description: recipe.label,
+        openGraph: {
+            title: `Recette: ${recipe.label} par ${params.username}`,
+            description: recipe.label,
+            images: [recipe.image],
+        },
     };
+}
+
+interface Ingredient {
+    quantity: string;
+    ingredient: {
+        name: string;
+    };
+}
+
+interface Step {
+    name: string;
+    preparation: boolean;
+    duration: number;
+    description: string;
 }
 
 const RecipePage = async ({ params }: RecipePageProps) => {
@@ -57,7 +78,7 @@ const RecipePage = async ({ params }: RecipePageProps) => {
                 <div className="mb-8">
                     <h2 className="text-2xl font-semibold mb-4">Ingrédients</h2>
                     <div className="flex flex-wrap gap-2">
-                        {recipe.recipeIngredients.map((item: any, index: number) => (
+                        {recipe.recipeIngredients.map((item: Ingredient, index: number) => (
                             <Badge key={index} variant="outline" className="px-3 py-2 text-sm bg-gray-50">
                                 {item.quantity} {item.ingredient.name}
                             </Badge>
@@ -72,7 +93,7 @@ const RecipePage = async ({ params }: RecipePageProps) => {
                     <div className="relative">
                         <div className="absolute left-8 top-0 bottom-0 w-1 bg-black rounded-full" />
                         <div className="space-y-8">
-                            {recipe.steps.map((step: any, index: number) => (
+                            {recipe.steps.map((step: Step, index: number) => (
                                 <div key={index} className="relative">
                                     <div className="absolute left-8 top-0 w-10 h-10 bg-black rounded-full border-4 border-white text-white transform -translate-x-1/2 z-10 flex items-center justify-center">
                                         {index + 1}
