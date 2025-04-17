@@ -1,4 +1,4 @@
-import { Card, CardContent, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from './ui/button';
 import { ChefHat, CookingPot } from "lucide-react";
@@ -53,9 +53,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           <AvatarFallback>{avatarAlt}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col justify-center">
-          <CardTitle className="text-lg font-semibold">
+          <h3 className="text-lg font-semibold">
             {title}
-          </CardTitle>
+          </h3>
           <CardDescription className="text-sm text-gray-500">
             Par <span className="font-medium">{username}</span>
           </CardDescription>

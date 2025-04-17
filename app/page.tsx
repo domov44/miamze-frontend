@@ -3,7 +3,7 @@ import RecipeCard from "@/components/recipe-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useAuth } from "./contexts/authContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchRecipes } from "./services/recipe";
@@ -57,13 +57,13 @@ export default function Home() {
                   <AvatarImage src="https://github.com/shadcn.png" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <CardDescription className="text-sm text-gray-500">
+                <p className="text-sm">
                   Bonjour <span className="font-medium">{user.name}</span>👋
-                </CardDescription>
+                </p>
               </div>
-              <CardTitle className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold">
                 On cuisine quoi aujourd&apos;hui?
-              </CardTitle>
+              </h3>
             </div>
             <CardFooter className="flex gap-2 p-4 pt-2">
               <Button className="text-sm" href="/ajouter-une-recette">
@@ -79,13 +79,13 @@ export default function Home() {
             <Card className="w-full overflow-hidden shadow-lg">
               <div className="flex flex-col justify-center p-4 pb-2">
                 <div className="flex gap-1 items-center">
-                  <CardDescription className="text-sm text-gray-500">
+                  <p className="text-sm">
                     Bonjour, <span className="font-medium">vous n&apos;êtes pas connecté</span>👋
-                  </CardDescription>
+                  </p>
                 </div>
-                <CardTitle className="text-lg font-semibold">
+                <h3 className="text-lg font-semibold">
                   Rejoignez Miamze pour partager vos recettes
-                </CardTitle>
+                </h3>
               </div>
               <CardFooter className="flex gap-2 p-4 pt-2">
                 <Button className="text-sm" href="/se-connecter">
@@ -159,23 +159,23 @@ export default function Home() {
           <Card className="w-full overflow-hidden shadow-lg">
             <CardContent className="p-4 flex gap-4">
               <div className="flex flex-col justify-center w-full">
-                <CardTitle className="text-lg font-semibold">
+                <h3 className="text-lg font-semibold">
                   Tendances et Catégories
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-500">
+                </h3>
+                <p className="text-sm">
                   Découvrez les dernières tendances culinaires et explorez des recettes populaires!
-                </CardDescription>
+                </p>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <Button variant="outline" className="text-xs text-gray-600 border-gray-300">
+                  <Button variant="outline" className="text-xs border-gray-300">
                     #Tendances
                   </Button>
-                  <Button variant="outline" className="text-xs text-gray-600 border-gray-300">
+                  <Button variant="outline" className="text-xs border-gray-300">
                     #RecettesVégétariennes
                   </Button>
-                  <Button variant="outline" className="text-xs text-gray-600 border-gray-300">
+                  <Button variant="outline" className="text-xs border-gray-300">
                     #RecettesRapides
                   </Button>
-                  <Button variant="outline" className="text-xs text-gray-600 border-gray-300">
+                  <Button variant="outline" className="text-xs border-gray-300">
                     #CuisineDuMonde
                   </Button>
                 </div>
@@ -185,12 +185,12 @@ export default function Home() {
           <Card className="w-full overflow-hidden shadow-lg">
             <CardContent className="p-4 flex gap-4">
               <div className="flex flex-col justify-center w-full">
-                <CardTitle className="text-lg font-semibold">
+                <h3 className="text-lg font-semibold">
                   Cuisto que vous pourriez aimer
-                </CardTitle>
-                <CardDescription className="text-sm text-gray-500">
+                </h3>
+                <p className="text-sm">
                   Explorez des profils qui pourraient vous inspirer!
-                </CardDescription>
+                </p>
               </div>
             </CardContent>
             <CardFooter className="p-4 border-t flex flex-col md:flex-row justify-between items-center">
@@ -200,21 +200,21 @@ export default function Home() {
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>AN</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm text-gray-600">Utilisateur1</span>
+                  <span className="text-sm">Utilisateur1</span>
                 </div>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Avatar className="w-8 h-8">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>SB</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm text-gray-600">Utilisateur2</span>
+                  <span className="text-sm">Utilisateur2</span>
                 </div>
                 <div className="flex items-center gap-2 cursor-pointer">
                   <Avatar className="w-8 h-8">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>DM</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm text-gray-600">Utilisateur3</span>
+                  <span className="text-sm">Utilisateur3</span>
                 </div>
               </div>
             </CardFooter>

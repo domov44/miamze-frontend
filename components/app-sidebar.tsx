@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "./ui/button";
 import React from "react";
 import { useRecipe } from "@/app/contexts/recipeContext";
+import Logo from "./logo";
 
 const items = [
   { title: "Découvrir", url: "/", icon: Home },
@@ -24,6 +25,13 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
+        <SidebarGroup>
+          <Link href="/" className="w-48 h-auto">
+            <Logo className="w-48 h-auto" />
+          </Link>
+        </SidebarGroup>
+        <SidebarGroupContent>
+        </SidebarGroupContent>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -126,8 +134,8 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <div className="p-4 text-center">
-                    <p className="text-sm text-gray-500">Vous n&apos;êtes pas connecté</p>
-                    <p className="text-lg font-semibold">Rejoignez-nous pour partager vos recettes !</p>
+                    <p className="text-sm">Vous n&apos;êtes pas connecté</p>
+                    <h3 className="text-lg font-semibold">Rejoignez-nous pour partager vos recettes !</h3>
                     <Button className="text-sm" href="/se-connecter">
                       Se connecter
                     </Button>
