@@ -2,12 +2,14 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from 'react';
 import { getToken, setToken, removeToken } from '../utils/auth';
+
 interface User {
     id: string;
     name: string;
     surname: string;
     email: string;
     username: string;
+    avatarUrl?: string;
 }
 
 interface AuthContextType {
@@ -33,9 +35,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+
             if (response.ok) {
                 const data: User = await response.json();
-                setUser(data);
+
+                const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${data.username.charAt(0).toUpperCase()}`;
+
+                setUser({ ...data, avatarUrl });
                 setIsAuthenticated(true);
             } else {
                 setIsAuthenticated(false);

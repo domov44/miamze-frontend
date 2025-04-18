@@ -80,3 +80,22 @@ export const deleteRecipe = async (token, id) => {
         throw error;
     }
 };
+
+export const fetchUsersByUsername= async (username) => {
+    try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${apiUrl}/users/${username}`, {
+            cache: "no-store",
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch the user ${username}. Status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error(`Error fetching the user:${username}`, error);
+        throw error;
+    }
+};
