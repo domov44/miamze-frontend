@@ -196,7 +196,7 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton>
                     <Avatar className="w-5 h-5">
-                      <AvatarImage src={"https://github.com/shadcn.png"} />
+                      <AvatarImage src={user?.avatarUrl} alt={user?.username} />
                       <AvatarFallback>{user.username[0]}</AvatarFallback>
                     </Avatar>
                     {user.username}

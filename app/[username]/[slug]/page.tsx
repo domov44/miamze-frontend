@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Clock, ChefHat, CookingPot } from "lucide-react";
 import { calculateTotalTime } from "@/app/utils/calculateTotalTime";
 import { calculatePostedAgo } from "@/app/utils/calculatePostedAgo";
+import Link from "next/link";
 
 interface RecipePageProps {
     params: {
@@ -17,10 +18,10 @@ interface RecipePageProps {
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
     const recipe = await fetchRecipeBySlug(params.username, params.slug);
     return {
-        title: `Recette: ${recipe.label} par ${params.username}`,
+        title: `${recipe.label} par ${params.username}`,
         description: recipe.label,
         openGraph: {
-            title: `Recette: ${recipe.label} par ${params.username}`,
+            title: `${recipe.label} par ${params.username}`,
             description: recipe.label,
             images: [recipe.image],
         },
@@ -70,7 +71,15 @@ const RecipePage = async ({ params }: RecipePageProps) => {
                             <Clock className="w-4 h-4" /> <span>Total: {totalTime} min</span>
                         </div>
                     </div>
-                    <p className="text-gray-500 text-sm mt-2">Publiée il y&apos;a {postedAgo} par {recipe.user.name} {recipe.user.surname}</p>
+                    <p className="text-gray-500 text-sm mt-2">
+                        Publiée il y&apos;a {postedAgo} par{" "}
+                        <Link
+                            href={`/${recipe.user.username}`}
+                            className="font-medium hover:underline text-primary"
+                        >
+                            {recipe.user.username}
+                        </Link>
+                    </p>
                 </div>
 
                 <Separator className="my-6" />

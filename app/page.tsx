@@ -54,7 +54,7 @@ export default function Home() {
             <div className="flex flex-col justify-center p-4 pb-2">
               <div className="flex gap-1 items-center">
                 <Avatar className="w-5 h-5">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src={user?.avatarUrl} alt={user?.username} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <p className="text-sm">
@@ -134,7 +134,7 @@ export default function Home() {
                       slug={recipe.slug}
                       prepTime={`${totalPreparationTime} min`}
                       cookTime={`${totalCookingTime} min`}
-                      avatarSrc="https://github.com/shadcn.png"
+                      avatarSrc={`https://api.dicebear.com/7.x/initials/svg?seed=${recipe?.user?.username.charAt(0).toUpperCase()}`}
                       avatarAlt={recipe.user?.username || "Auteur"}
                       title={recipe.label}
                       username={recipe.user?.username || "Utilisateur inconnu"}

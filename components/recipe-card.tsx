@@ -1,7 +1,10 @@
+"use client";
+
 import { Card, CardContent, CardFooter, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 import { ChefHat, CookingPot } from "lucide-react";
+import Link from "next/link";
 
 interface RecipeCardProps {
   imageSrc: string;
@@ -28,7 +31,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   title,
   username,
   views,
-  postedAgo
+  postedAgo,
 }) => {
   return (
     <Card className="w-full overflow-hidden shadow-lg">
@@ -47,24 +50,34 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           </div>
         </div>
       </div>
-      <CardContent className="p-4 flex gap-4">
-        <Avatar className="w-12 h-12">
-          <AvatarImage src={avatarSrc} />
-          <AvatarFallback>{avatarAlt}</AvatarFallback>
-        </Avatar>
+
+      <CardContent className="p-4 flex gap-4 items-center">
+        <Link href={`/${username}`}>
+          <Avatar className="w-12 h-12 hover:opacity-80 transition-opacity">
+            <AvatarImage src={avatarSrc} />
+            <AvatarFallback>{avatarAlt}</AvatarFallback>
+          </Avatar>
+        </Link>
         <div className="flex flex-col justify-center">
-          <h3 className="text-lg font-semibold">
-            {title}
-          </h3>
+          <h3 className="text-lg font-semibold">{title}</h3>
           <CardDescription className="text-sm text-gray-500">
-            Par <span className="font-medium">{username}</span>
+            Par{" "}
+            <Link
+              href={`/${username}`}
+              className="font-medium hover:underline text-primary"
+            >
+              {username}
+            </Link>
           </CardDescription>
         </div>
       </CardContent>
+
       <CardFooter className="p-4 border-t flex justify-between items-center">
-        <Button variant="outline" className="text-sm" href={`/${username}/${slug}`}>
-          Suivre la recette
-        </Button>
+        <Link href={`/${username}/${slug}`}>
+          <Button variant="outline" className="text-sm">
+            Suivre la recette
+          </Button>
+        </Link>
         <span className="text-sm text-gray-500">
           {views} vues • il y a {postedAgo}
         </span>
