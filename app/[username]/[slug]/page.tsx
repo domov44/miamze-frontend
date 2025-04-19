@@ -1,12 +1,13 @@
 import { fetchRecipeBySlug } from "@/app/services/recipe";
 import { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Clock, ChefHat, CookingPot } from "lucide-react";
 import { calculateTotalTime } from "@/app/utils/calculateTotalTime";
 import { calculatePostedAgo } from "@/app/utils/calculatePostedAgo";
 import Link from "next/link";
+import { TimelineStep, VerticalTimeline } from "@/components/vertical-timeline";
 
 interface RecipePageProps {
     params: {
@@ -97,40 +98,31 @@ const RecipePage = async ({ params }: RecipePageProps) => {
 
                 <Separator className="my-6" />
 
-                <div>
-                    <h2 className="text-2xl font-semibold mb-4">Instructions</h2>
-                    <div className="relative">
-                        <div className="absolute left-8 top-0 bottom-0 w-1 bg-black rounded-full" />
-                        <div className="space-y-8">
-                            {recipe.steps.map((step: Step, index: number) => (
-                                <div key={index} className="relative">
-                                    <div className="absolute left-8 top-0 w-10 h-10 bg-black rounded-full border-4 border-white text-white transform -translate-x-1/2 z-10 flex items-center justify-center">
+                <Card>
+                    <CardContent className="p-8">
+                        <h2 className="text-2xl font-semibold mb-4">Instructions</h2>
+                        <VerticalTimeline
+                            steps={recipe.steps.map((step: Step, index: number): TimelineStep => ({
+                                title: step.name,
+                                badge: {
+                                    text: step.preparation ? "Préparation" : "Cuisson",
+                                    icon: step.preparation ? <ChefHat className="w-4 h-4" /> : <CookingPot className="w-4 h-4" />,
+                                    variant: step.preparation ? "secondary" : "destructive",
+                                },
+                                description: step.description,
+                                date: {
+                                    icon: <Clock className="w-3 h-3" />,
+                                    label: `${step.duration} minutes`,
+                                },
+                                marker: (
+                                    <div className="flex items-center gap-1">
                                         {index + 1}
                                     </div>
-                                    <Card className="ml-16 hover:shadow-md transition-shadow">
-                                        <CardHeader>
-                                            <div className="flex justify-between items-center">
-                                                <CardTitle className="text-lg flex items-center">
-                                                    {step.name}
-                                                </CardTitle>
-                                                <Badge variant={step.preparation ? "secondary" : "destructive"}>
-                                                    {step.preparation ? "Préparation" : "Cuisson"}
-                                                </Badge>
-                                            </div>
-                                            <CardDescription className="flex items-center">
-                                                <Clock className="h-4 w-4 mr-1" />
-                                                {step.duration} minutes
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p>{step.description}</p>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                                )
+                            }))}
+                        />
+                    </CardContent>
+                </Card>
             </div>
         );
     } catch (error) {
