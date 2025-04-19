@@ -204,8 +204,10 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
-                  <DropdownMenuItem>
-                    <span>Mon profil</span>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profil">
+                      <span>Mon profil</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <span>Se déconnecter</span>
