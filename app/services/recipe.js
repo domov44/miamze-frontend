@@ -16,7 +16,6 @@ export const createRecipe = async (token, recipeData) => {
         }
 
         const data = await res.json();
-        console.log(data);
         return data;
     } catch (error) {
         console.error("Error creating recipe:", error);
