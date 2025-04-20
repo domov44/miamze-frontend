@@ -18,12 +18,13 @@ interface RecipePageProps {
 
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
     const recipe = await fetchRecipeBySlug(params.username, params.slug);
+    console.log(recipe)
     return {
         title: `${recipe.label} par ${params.username}`,
         description: recipe.label,
         openGraph: {
             title: `${recipe.label} par ${params.username}`,
-            description: recipe.label,
+            description: recipe.description,
             images: [recipe.image],
         },
     };
@@ -72,7 +73,7 @@ const RecipePage = async ({ params }: RecipePageProps) => {
                             <Clock className="w-4 h-4" /> <span>Total: {totalTime} min</span>
                         </div>
                     </div>
-                    <p className="text-gray-500 text-sm mt-2">
+                    <p className="text-sm mt-2">
                         Publiée il y&apos;a {postedAgo} par{" "}
                         <Link
                             href={`/${recipe.user.username}`}
@@ -86,10 +87,21 @@ const RecipePage = async ({ params }: RecipePageProps) => {
                 <Separator className="my-6" />
 
                 <div className="mb-8">
+                    <h2 className="text-2xl font-semibold mb-4">À propos de cette recette</h2>
+                    <p className="text-sm mt-2">
+                        {recipe.description
+                            ? recipe.description
+                            : `${recipe.user.username} n'a pas voulu nous partager l'histoire de sa recette.`}
+                    </p>
+                </div>
+
+                <Separator className="my-6" />
+
+                <div className="mb-8">
                     <h2 className="text-2xl font-semibold mb-4">Ingrédients</h2>
                     <div className="flex flex-wrap gap-2">
                         {recipe.recipeIngredients.map((item: Ingredient, index: number) => (
-                            <Badge key={index} variant="outline" className="px-3 py-2 text-sm bg-gray-50">
+                            <Badge key={index} variant="outline" className="px-3 py-2 text-sm bg-card">
                                 {item.quantity} {item.ingredient.name}
                             </Badge>
                         ))}

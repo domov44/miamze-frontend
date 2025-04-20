@@ -1,3 +1,29 @@
+export const createRecipe = async (token, recipeData) => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    try {
+        const res = await fetch(`${apiUrl}/recipes`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(recipeData),
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to create recipe. Status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Error creating recipe:", error);
+        throw error;
+    }
+};
+
 export const fetchRecipes = async () => {
     try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;

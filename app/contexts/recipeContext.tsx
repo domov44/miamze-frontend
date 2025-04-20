@@ -23,6 +23,7 @@ interface RecipeContextType {
     loading: boolean;
     fetchRecipes: () => void;
     deleteRecipe: (id: number) => void;
+    addRecipe: (newRecipe: Recipe) => void;
 }
 
 interface RecipeProviderProps {
@@ -56,6 +57,10 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
         }
     };
 
+    const addRecipe = (newRecipe: Recipe) => {
+        setRecipes((prevRecipes) => [...prevRecipes, newRecipe]);
+    };
+
     const deleteRecipeHandler = async (id: number) => {
         const token = getToken();
 
@@ -85,7 +90,7 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     }, [isAuthenticated]);
 
     return (
-        <RecipeContext.Provider value={{ recipes, loading, fetchRecipes, deleteRecipe: deleteRecipeHandler }}>
+        <RecipeContext.Provider value={{ recipes, loading, fetchRecipes, deleteRecipe: deleteRecipeHandler, addRecipe }}>
             {children}
         </RecipeContext.Provider>
     );

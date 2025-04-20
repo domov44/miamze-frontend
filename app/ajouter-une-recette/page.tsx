@@ -31,6 +31,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { getToken } from "../utils/auth";
+import { useRecipe } from "../contexts/recipeContext";
+import { createRecipe } from "../services/recipe";
 
 interface Ingredient {
     id: number;
@@ -55,7 +57,7 @@ interface Recipe {
 }
 
 export default function AddRecipePage() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const { addRecipe } = useRecipe();
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [categories, setCategories] = useState<{ id: number; label: string }[]>([]);
     const [currentStep, setCurrentStep] = useState<number>(1);
@@ -215,6 +217,7 @@ export default function AddRecipePage() {
     const submitRecipe = async () => {
         const recipeToSubmit = {
             label: recipe.name,
+            description: recipe.description,
             categoryId: parseInt(recipe.category),
             image: "https://www.api.masseur-electrique.fr/wp-content/uploads/2025/02/couscous.webp",
             recipeIngredients: recipe.ingredients.map(ingredient => ({
@@ -229,38 +232,22 @@ export default function AddRecipePage() {
             }))
         };
 
-        console.log(JSON.stringify(recipeToSubmit, null, 2));
 
         const token = getToken();
         if (token) {
             try {
-                const response = await fetch(`${apiUrl}/recipes`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(recipeToSubmit),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('Recette ajoutée :', data);
-                    toast.success("Recette ajoutée avec succès !");
-                } else {
-                    console.error('Erreur lors de l\'ajout de la recette:', response.statusText);
-                    toast.error("Erreur lors de l'ajout de la recette !");
-                }
+                const data = await createRecipe(token, recipeToSubmit);
+                addRecipe(data);
+                toast.success("Recette ajoutée avec succès !");
+                router.push("/mes-recettes");
             } catch (error) {
-                console.error('Erreur réseau ou autre:', error);
+                console.error('Erreur lors de l\'ajout de la recette:', error);
                 toast.error("Erreur lors de l'ajout de la recette !");
             }
         } else {
             console.error('Token manquant');
             toast.error("Token manquant, veuillez vous reconnecter !");
         }
-
-        router.push("/mes-recettes");
     };
 
     const renderStepIndicator = () => {
