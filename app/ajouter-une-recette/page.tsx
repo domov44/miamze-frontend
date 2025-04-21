@@ -291,7 +291,7 @@ export default function AddRecipePage() {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen w-full py-10 px-4 bg-gray-50">
+        <div className="flex justify-center items-center min-h-screen w-full py-10 px-4">
             <Card className="max-w-3xl w-full shadow-md">
                 <CardHeader className="pb-8">
                     <CardTitle className="text-xl text-center pb-8">Ajouter une recette</CardTitle>

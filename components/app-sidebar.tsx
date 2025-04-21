@@ -19,7 +19,7 @@ const items = [
 ];
 
 export function AppSidebar() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const { recipes, loading } = useRecipe();
 
   return (
@@ -133,15 +133,17 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <div className="p-4 text-center">
+                  <div className="text-center flex gap-1 flex-col">
                     <p className="text-sm">Vous n&apos;êtes pas connecté</p>
                     <h3 className="text-lg font-semibold">Rejoignez-nous pour partager vos recettes !</h3>
-                    <Button className="text-sm" href="/se-connecter">
-                      Se connecter
-                    </Button>
-                    <Button variant="outline" className="text-sm" href="/inscription">
-                      Créer un compte gratuitement
-                    </Button>
+                    <div className="flex gap-2 flex-col">
+                      <Button className="text-sm w-full" href="/se-connecter">
+                        Se connecter
+                      </Button>
+                      <Button variant="outline" className="text-sm w-full" href="/inscription">
+                        Créer un compte gratuitement
+                      </Button>
+                    </div>
                   </div>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -209,7 +211,7 @@ export function AppSidebar() {
                       <span>Mon profil</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout}>
                     <span>Se déconnecter</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
