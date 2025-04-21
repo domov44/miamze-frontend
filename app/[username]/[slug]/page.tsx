@@ -18,10 +18,9 @@ interface RecipePageProps {
 
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
     const recipe = await fetchRecipeBySlug(params.username, params.slug);
-    console.log(recipe)
     return {
         title: `${recipe.label} par ${params.username}`,
-        description: recipe.label,
+        description: recipe.description,
         openGraph: {
             title: `${recipe.label} par ${params.username}`,
             description: recipe.description,
@@ -63,6 +62,9 @@ const RecipePage = async ({ params }: RecipePageProps) => {
                 <div className="mb-8">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4">{recipe.label}</h1>
                     <div className="flex gap-2">
+                        <div className="flex items-center gap-1 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded-md">
+                            <span>{recipe.category.label}</span>
+                        </div>
                         <div className="flex items-center gap-1 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded-md">
                             <ChefHat className="w-4 h-4" /> <span>Préparation: {totalPreparationTime} min</span>
                         </div>

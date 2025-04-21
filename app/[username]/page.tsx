@@ -22,6 +22,9 @@ interface Step {
 
 interface Recipe {
     id: number;
+    category: {
+        label: string;
+    };
     label: string;
     image: string;
     slug: string;
@@ -84,6 +87,7 @@ const ProfilePage = async ({ params }: RecipePageProps) => {
                                     <RecipeCard
                                         key={recipe.id}
                                         imageSrc={recipe.image}
+                                        category={recipe.category.label}
                                         imageAlt={recipe.label}
                                         slug={recipe.slug}
                                         prepTime={`${totalPreparationTime} min`}
