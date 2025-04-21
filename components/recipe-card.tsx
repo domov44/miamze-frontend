@@ -9,6 +9,7 @@ import Link from "next/link";
 interface RecipeCardProps {
   imageSrc: string;
   imageAlt: string;
+  category: string;
   slug: string;
   prepTime: string;
   cookTime: string;
@@ -23,6 +24,7 @@ interface RecipeCardProps {
 const RecipeCard: React.FC<RecipeCardProps> = ({
   imageSrc,
   slug,
+  category,
   imageAlt,
   prepTime,
   cookTime,
@@ -42,6 +44,9 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           className="w-full h-64 object-cover"
         />
         <div className="absolute bottom-2 right-2 flex gap-2">
+          <div className="flex items-center gap-1 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded-md">
+            <span>{category}</span>
+          </div>
           <div className="flex items-center gap-1 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded-md">
             <ChefHat className="w-4 h-4" /> {prepTime}
           </div>

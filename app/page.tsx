@@ -20,6 +20,9 @@ export default function Home() {
     id: number;
     label: string;
     slug: string;
+    category: {
+      label: string;
+    };
     image: string;
     createdAt: string;
     user?: {
@@ -130,6 +133,7 @@ export default function Home() {
                     <RecipeCard
                       key={recipe.id}
                       imageSrc={recipe.image}
+                      category={recipe.category.label}
                       imageAlt={recipe.label}
                       slug={recipe.slug}
                       prepTime={`${totalPreparationTime} min`}
@@ -150,7 +154,7 @@ export default function Home() {
                   ))}
                 </div>
               )}
-            </div>;
+            </div>
           </TabsContent>
         </Tabs>
       </div>
@@ -222,6 +226,6 @@ export default function Home() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
