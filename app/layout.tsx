@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import "./globals.css";
+import "./styles/globals.css";
+import "./fonts/fonts.css";
 import { AuthProvider } from "./contexts/authContext";
 import { Toaster } from "@/components/ui/sonner";
 import ConfirmGlobal from "../hooks/confirm/ConfirmGlobal";

@@ -171,7 +171,7 @@ export default function Home() {
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Button variant="outline" className="text-xs border-gray-300">
-                    #Tendances
+                    Tendances
                   </Button>
                   <Button variant="outline" className="text-xs border-gray-300">
                     #RecettesVégétariennes
