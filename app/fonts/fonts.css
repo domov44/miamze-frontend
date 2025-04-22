@@ -1,0 +1,13 @@
+  @font-face {
+    font-family: 'Aeonik-regular';
+    src: url('Aeonik-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'ppneuemontreal-medium';
+    src: url('ppneuemontreal-medium.woff') format('woff');
+    font-style: normal;
+    font-display: swap;
+  }
